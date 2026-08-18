@@ -24,9 +24,6 @@ export const requestFormSchema = z.object({
     message: "Selecciona una opción" 
   }),
   additionalNotes: z.string().optional(),
-
-  // Datos Internos del Sistema
-  supportType: z.array(z.string()).default(["VISITA_PASTORAL"]),
   
   // Consentimiento
   consentAccepted: z.boolean().refine((val) => val === true, {

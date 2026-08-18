@@ -19,20 +19,19 @@ export function RequestForm() {
   const [isSuccess, setIsSuccess] = useState(false)
   const supabase = createClient()
 
-  const form = useForm<RequestFormValues>({
-    resolver: zodResolver(requestFormSchema),
-    defaultValues: {
-      applicantName: "",
-      applicantPhone: "",
-      applicantEmail: "",
-      relationToPatient: "",
-      patientName: "",
-      neighborhood: "",
-      exactAddress: "",
-      supportType: ["VISITA_PASTORAL"],
-      consentAccepted: false,
-    },
-  })
+  const { error: requestError } = await supabase
+        .from('requests')
+        .insert({
+          id: requestId,
+          applicant_id: applicantId,
+          patient_id: patientId,
+          support_type: ["VISITA_PASTORAL"], // <-- Cambio aquí
+          situation_description: data.situationDescription,
+          patient_awareness: data.patientAwareness,
+          additional_notes: data.additionalNotes,
+          status: 'NUEVA',
+          priority: 'VERDE'
+        })
 
   async function onSubmit(data: RequestFormValues) {
     setIsSubmitting(true)
@@ -73,7 +72,7 @@ export function RequestForm() {
           id: requestId,
           applicant_id: applicantId,
           patient_id: patientId,
-          support_type: data.supportType,
+          support_type: ["VISITA_PASTORAL"], // <-- Cambio aquí
           situation_description: data.situationDescription,
           patient_awareness: data.patientAwareness,
           additional_notes: data.additionalNotes,
