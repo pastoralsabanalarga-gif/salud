@@ -1,36 +1,36 @@
-import * as z from "zod"
+import { z } from "zod"
 
 export const requestFormSchema = z.object({
   // Datos del Solicitante
-  applicantName: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres." }),
-  applicantPhone: z.string().min(7, { message: "Ingresa un número de teléfono válido." }),
-  applicantEmail: z.string().email({ message: "Correo inválido." }).optional().or(z.literal("")),
-  relationToPatient: z.string().min(2, { message: "Indica tu relación con la persona (ej. Hijo, Esposa, Amigo)." }),
-  preferredContact: z.enum(["TELEFONO", "WHATSAPP", "CORREO"], {
-    required_error: "Selecciona un medio de contacto preferido.",
-  }),
+  applicantName: z.string().min(2, { message: "El nombre es obligatorio" }),
+  applicantPhone: z.string().min(7, { message: "El teléfono es obligatorio" }),
+  applicantEmail: z.string().email({ message: "Correo inválido" }).optional().or(z.literal("")),
+  relationToPatient: z.string().min(2, { message: "La relación es obligatoria" }),
+  preferredContact: z.enum(["WHATSAPP", "TELEFONO"], { message: "Selecciona un medio de contacto" }),
 
-  // Datos de la Persona Acompañada
-  patientName: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres." }),
+  // Datos del Paciente
+  patientName: z.string().min(2, { message: "El nombre del enfermo es obligatorio" }),
   patientPhone: z.string().optional(),
-  ageRange: z.string({ required_error: "Selecciona un rango de edad aproximado." }),
-  neighborhood: z.string().min(3, { message: "Indica el barrio o sector." }),
-  exactAddress: z.string().min(5, { message: "La dirección es necesaria para la visita." }),
-  locationType: z.enum(["CASA", "HOSPITAL", "OTRO"], {
-    required_error: "Indica dónde se encuentra la persona.",
-  }),
+  ageRange: z.enum(["NINO", "JOVEN", "ADULTO", "ADULTO_MAYOR"], { message: "Selecciona un rango de edad" }),
+  locationType: z.enum(["CASA", "HOSPITAL", "OTRO"], { message: "Selecciona dónde se encuentra" }),
+  neighborhood: z.string().min(2, { message: "El barrio es obligatorio" }),
+  exactAddress: z.string().min(5, { message: "La dirección exacta es obligatoria" }),
 
-  // Preguntas Pastorales
-  supportType: z.array(z.string()).min(1, { message: "Selecciona al menos un tipo de acompañamiento." }),
-  situationDescription: z.string({ required_error: "Selecciona cómo describirías la situación." }),
-  patientAwareness: z.enum(["SI", "NO", "NO_SEGURO"], {
-    required_error: "Indica si la persona sabe de esta solicitud.",
+  // Situación Pastoral
+  situationDescription: z.enum(["ENFERMEDAD_RECIENTE", "ENFERMEDAD_PROLONGADA", "SITUACION_DELICADA"], { 
+    message: "Selecciona una descripción" 
+  }),
+  patientAwareness: z.enum(["SI", "NO", "NO_SEGURO"], { 
+    message: "Selecciona una opción" 
   }),
   additionalNotes: z.string().optional(),
 
-  // Consentimiento (Obligatorio)
+  // Datos Internos del Sistema
+  supportType: z.array(z.string()).default(["VISITA_PASTORAL"]),
+  
+  // Consentimiento
   consentAccepted: z.boolean().refine((val) => val === true, {
-    message: "Debes aceptar el tratamiento de datos para poder continuar.",
+    message: "Debes aceptar el tratamiento de datos",
   }),
 })
 
